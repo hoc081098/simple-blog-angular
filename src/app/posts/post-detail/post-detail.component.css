@@ -1,0 +1,19 @@
+mat-card {
+  max-width: 700px;
+  margin: 10px auto;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+mat-progress-bar {
+  margin: 10px auto;
+}
+
+img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 10px auto 0 auto;
+}

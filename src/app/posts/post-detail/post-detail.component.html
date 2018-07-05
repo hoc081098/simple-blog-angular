@@ -1,0 +1,89 @@
+<div [hidden]="editting">
+  <mat-card *ngIf="post; else no_content">
+    <mat-card-header>
+      <mat-card-title>{{post.title}}</mat-card-title>
+      <mat-card-subtitle>posted by {{post.author}} &bull; {{post.published.toDate() | date: 'fullDate'}}</mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image [src]="post.image" alt="{{post.title}}">
+    <mat-card-content>
+      <p>
+        {{post.content}}
+      </p>
+    </mat-card-content>
+    <mat-card-actions align="end" *ngIf="authService.currentUser?.uid === post.authorId">
+
+      <button mat-icon-button color="primary" (click)="onEditClicked(form)">
+        <mat-icon aria-label="Edit">edit</mat-icon>
+      </button>
+
+      <button mat-icon-button color="warn" (click)="deletePost(post.id)">
+        <mat-icon aria-label="Delete">delete</mat-icon>
+      </button>
+
+    </mat-card-actions>
+  </mat-card>
+
+  <ng-template #no_content>
+    <mat-card>
+      <mat-card-content>
+        No content
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
+</div>
+
+<div [hidden]="!editting">
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Edit post</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="example-container">
+        <form #form="ngForm">
+          <div>
+            <mat-form-field>
+              <mat-label>Title</mat-label>
+              <input matInput name="title" placeholder="Post title" required minlength="3" #title="ngModel" ngModel>
+              <mat-icon matSuffix>title</mat-icon>
+              <mat-error *ngIf="title.invalid">Min length of title is 3</mat-error>
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field>
+              <mat-label>Content</mat-label>
+              <textarea name="content" matInput placeholder="Post content" #content="ngModel" ngModel rows="10"></textarea>
+              <button mat-button *ngIf="content.value" matSuffix mat-icon-button aria-label="Clear" (click)="content.reset()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <button mat-raised-button color="accent" (click)="fileInput.click()">
+              <mat-icon>library_add</mat-icon>
+              <span>Choose image</span>
+              <input accept="image/*" style="display: none;" (change)="onFileInput($event)" required type="file" #fileInput>
+            </button>
+          </div>
+
+          <div>
+            <div [hidden]="!percentageChanges">
+              <mat-progress-bar mode="determinate" [value]="percentageChanges | async"></mat-progress-bar>
+            </div>
+            <div *ngIf="imageUrl">
+              <img [src]="imageUrl">
+            </div>
+          </div>
+        </form>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button color="primary" (click)="onSubmited(form)" [disabled]="form.invalid">
+        Submit change
+      </button>
+      <button mat-button color="accent" (click)="editting=false">
+        Exit edit mode
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
